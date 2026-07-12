@@ -4,14 +4,16 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
+	"onlineshop/handler"
 	"os"
 
+	"github.com/gin-gonic/gin"
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
 func main() {
 	db, err := sql.Open("pgx", os.Getenv("DB_URI"))
-	
+
 	if err != nil {
 		fmt.Printf("Gagal Membuat koneksi ke database: %v\n", err)
 		os.Exit(1)
@@ -29,13 +31,25 @@ func main() {
 		os.Exit(1)
 	}
 
+	r := gin.Default()
+	r.GET("/api/v1/products", handler.ListProduct)
+	r.GET("/api/v1/products/:id")
+	r.POST("/api/v1/checkout")
+
+	r.POST("/api/v1/orders/:id/confirm")
+	r.GET("/api/v1/orders/:id")
+
+	r.POST("/admin/products")
+	r.PUT("/admin/products/:id")
+	r.DELETE("/admin/products/:id")
+
 	server := &http.Server{
 		Addr:    ":8080",
-		Handler: nil,
+		Handler: r,
 	}
 
 	if err = server.ListenAndServe(); err != nil {
-		fmt.Printf("Gagal menjalankan server: %v\n", err)
+		fmt.Printf("Gagal Melakukan Koneksi ke port %v: %v\n", server.Addr, err)
 		os.Exit(1)
 	}
 }
