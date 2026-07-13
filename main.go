@@ -32,7 +32,7 @@ func main() {
 	}
 
 	r := gin.Default()
-	r.GET("/api/v1/products", handler.ListProduct)
+	r.GET("/api/v1/products", handler.ListProduct(db))
 	r.GET("/api/v1/products/:id")
 	r.POST("/api/v1/checkout")
 
