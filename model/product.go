@@ -6,8 +6,8 @@ import (
 )
 
 type Product struct {
-	ID    string
-	Name  string
+	ID        string
+	Name      string
 	Price     int
 	isDeleted *bool
 }
@@ -38,4 +38,21 @@ func SelectProducts(db *sql.DB) ([]Product, error) {
 	}
 
 	return products, nil
+}
+
+func SelectProductByID(db *sql.DB, id string) (Product, error) {
+	if db == nil {
+		return Product{}, errDBNill
+	}
+
+	query := `SELECT id, name, price FROM products WHERE is_deleted = false AND id = $1`
+
+	var product Product
+	row := db.QueryRow(query, id)
+
+	if err := row.Scan(&product.ID, &product.Name, &product.Price); err != nil {
+		return Product{}, err
+	}
+
+	return product, nil
 }
