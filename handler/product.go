@@ -5,6 +5,8 @@ import (
 	"log"
 	"onlineshop/model"
 
+	"github.com/google/uuid"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -39,5 +41,70 @@ func GetProduct(db *sql.DB) gin.HandlerFunc {
 		// Todo : Berikan respon
 		c.JSON(200, gin.H{"product": product})
 		return
+	}
+}
+
+func CreateProduct(db *sql.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var product model.Product
+		if err := c.BindJSON(&product); err != nil {
+			log.Printf("Terjadi Kesalahan saat membaca requests body: %v", err)
+			c.JSON(400, gin.H{"error": err.Error()})
+			return
+		}
+
+		product.ID = uuid.New().String()
+
+		if err := model.InsertProduct(db, product); err != nil {
+			log.Printf("Gagal membuat product: %v", err)
+			c.JSON(500, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(201, product)
+		return
+	}
+}
+
+func UpdateProduct(db *sql.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		id := c.Param("id")
+
+		var productReq model.Product
+		if err := c.BindJSON(&productReq); err != nil {
+			log.Printf("Terjadi Kesalahan saat membaca requests body: %v", err)
+			c.JSON(400, gin.H{"error": err.Error()})
+			return
+		}
+
+		product, err := model.SelectProductByID(db, id)
+
+		if err != nil {
+			log.Printf("Terjadi Kesalahan dalam mengambil product: %v", err)
+			c.JSON(500, gin.H{"error": "Terjadi kesalahan pada server"})
+			return
+		}
+
+		if productReq.Name != " " {
+			product.Name = productReq.Name
+		}
+
+		if productReq.Price != 0 {
+			product.Price = productReq.Price
+		}
+
+		if err := model.UpdateProduct(db, product); err != nil {
+			log.Printf("Gagal memperbaharui product: %v", err)
+			c.JSON(500, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(201, product)
+		return
+	}
+}
+
+func DeleteProduct(db *sql.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+
 	}
 }

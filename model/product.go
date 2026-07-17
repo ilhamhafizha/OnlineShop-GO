@@ -6,10 +6,10 @@ import (
 )
 
 type Product struct {
-	ID        string
-	Name      string
-	Price     int
-	isDeleted *bool
+	ID        string `json:"id" binding:"len=0"`
+	Name      string `json:"name"`
+	Price     int    `json:"price"`
+	isDeleted *bool  `json:"is_deleted,omitempty"`
 }
 
 var (
@@ -55,4 +55,38 @@ func SelectProductByID(db *sql.DB, id string) (Product, error) {
 	}
 
 	return product, nil
+}
+
+func InsertProduct(db *sql.DB, product Product) error {
+	if db == nil {
+		return errDBNill
+	}
+
+	query := `INSERT INTO products (id, name, price) VALUES ($1, $2, $3)`
+
+	_, err := db.Exec(query, product.ID, product.Name, product.Price)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
+func UpdateProduct(db *sql.DB, product Product) error {
+	if db == nil {
+		return errDBNill
+	}
+
+	query := `UPDATE products SET name = $1, price = $2 WHERE id = $3`
+
+	_, err := db.Exec(query, product.Name, product.Price, product.ID)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+
 }
