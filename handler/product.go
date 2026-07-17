@@ -22,7 +22,10 @@ func ListProduct(db *sql.DB) gin.HandlerFunc {
 		}
 
 		// Todo : Berikan respon
-		c.JSON(200, gin.H{"products": products})
+		c.JSON(200, gin.H{
+			"message":  "Berhasil mengambil daftar produk",
+			"products": products,
+		})
 		return
 	}
 }
@@ -39,7 +42,10 @@ func GetProduct(db *sql.DB) gin.HandlerFunc {
 			return
 		}
 		// Todo : Berikan respon
-		c.JSON(200, gin.H{"product": product})
+		c.JSON(200, gin.H{
+			"message": "Berhasil mengambil detail produk",
+			"product": product,
+		})
 		return
 	}
 }
@@ -61,7 +67,10 @@ func CreateProduct(db *sql.DB) gin.HandlerFunc {
 			return
 		}
 
-		c.JSON(201, product)
+		c.JSON(201, gin.H{
+			"message": "Produk berhasil ditambahkan",
+			"product": product,
+		})
 		return
 	}
 }
@@ -98,13 +107,27 @@ func UpdateProduct(db *sql.DB) gin.HandlerFunc {
 			c.JSON(500, gin.H{"error": err.Error()})
 			return
 		}
-		c.JSON(201, product)
+		c.JSON(200, gin.H{
+			"message": "Produk berhasil diperbarui",
+			"product": product,
+		})
 		return
 	}
 }
 
 func DeleteProduct(db *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		id := c.Param("id")
 
+		if err := model.DeleteProduct(db, id); err != nil {
+			log.Printf("Terjadi Kesalahan dalam menghapus product: %v", err)
+			c.JSON(500, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(200, gin.H{
+			"message": "Product berhasil dihapus",
+		})
+		return
 	}
 }
