@@ -23,8 +23,10 @@ func ListProduct(db *sql.DB) gin.HandlerFunc {
 
 		// Todo : Berikan respon
 		c.JSON(200, gin.H{
-			"message":  "Berhasil mengambil daftar produk",
-			"products": products,
+			"status":        "success",
+			"response_code": 200,
+			"message":       "Berhasil mengambil daftar produk",
+			"data":          products,
 		})
 		return
 	}
@@ -43,8 +45,10 @@ func GetProduct(db *sql.DB) gin.HandlerFunc {
 		}
 		// Todo : Berikan respon
 		c.JSON(200, gin.H{
-			"message": "Berhasil mengambil detail produk",
-			"product": product,
+			"status":        "success",
+			"response_code": 200,
+			"message":       "Berhasil mengambil detail produk",
+			"data":          product,
 		})
 		return
 	}
@@ -68,8 +72,10 @@ func CreateProduct(db *sql.DB) gin.HandlerFunc {
 		}
 
 		c.JSON(201, gin.H{
-			"message": "Produk berhasil ditambahkan",
-			"product": product,
+			"status":        "success",
+			"response_code": 201,
+			"message":       "Produk berhasil ditambahkan",
+			"data":          product,
 		})
 		return
 	}
@@ -108,8 +114,10 @@ func UpdateProduct(db *sql.DB) gin.HandlerFunc {
 			return
 		}
 		c.JSON(200, gin.H{
-			"message": "Produk berhasil diperbarui",
-			"product": product,
+			"status":        "success",
+			"response_code": 200,
+			"message":       "Produk berhasil diperbarui",
+			"data":          product,
 		})
 		return
 	}
@@ -126,7 +134,10 @@ func DeleteProduct(db *sql.DB) gin.HandlerFunc {
 		}
 
 		c.JSON(200, gin.H{
-			"message": "Product berhasil dihapus",
+			"status":        "success",
+			"response_code": 200,
+			"message":       "Product berhasil dihapus",
+			"data":          nil,
 		})
 		return
 	}

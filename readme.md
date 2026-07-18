@@ -10,6 +10,7 @@ docker run --name postgresql -e POSTGRES_USER=user -e POSTGRES_PASSWORD=password
 
 ```
 export DB_URI=postgresql://user:password@localhost:5432/database?sslmode=disable
+export ADMIN_SECRET=secret
 ```
 
 3. Jalankan Program
